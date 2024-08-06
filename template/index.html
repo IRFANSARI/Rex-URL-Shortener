@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>URL Shortener</h1>
+      </header>
+      <main>
+        <form id="shorten-form">
+          <textarea
+            id="long-url"
+            placeholder="Enter the long URL"
+            required
+          ></textarea>
+          <button id="shorten" type="submit">Shorten URL</button>
+        </form>
+        <div id="short-url-container">
+          <input
+            type="text"
+            id="short-url"
+            placeholder="Shortened URL will appear here"
+            readonly
+          />
+          <button id="copy-btn">Copy</button>
+        </div>
+      </main>
+      <footer>
+        <p>&copy; Made by IRFANSARI</p>
+      </footer>
+    </div>
+
+    <div id="toaster" class="toaster"></div>
+
+    <script>
+      $(document).ready(function () {
+        $('#shorten').on('click', function (e) {
+          e.preventDefault();
+          const longURL = $('#long-url').val();
+
+          const schemes = [
+            'http://',
+            'https://',
+            'ftp://',
+            'ftps://',
+            'mailto:',
+            'file://',
+          ];
+
+          // Check if the URL starts with any of the defined schemes
+          const startsWithScheme = schemes.some((scheme) =>
+            longURL.startsWith(scheme)
+          );
+
+          if (!startsWithScheme) {
+            showToast('Invalid URL !!!');
+            return;
+          }
+
+          $.ajax({
+            url: '/',
+            type: 'POST',
+            data: { url: longURL },
+            success: function (response) {
+              $('#short-url').val(response);
+            },
+          });
+        });
+
+        $('#copy-btn').on('click', function () {
+          const shortUrl = $('#short-url');
+          shortUrl.select();
+          document.execCommand('copy');
+          showToast('Copied on Clipboard');
+        });
+
+        function showToast(message) {
+          const toaster = $('#toaster');
+          toaster.text(message);
+          toaster.fadeIn(400).delay(1000).fadeOut(400);
+        }
+      });
+    </script>
+  </body>
+</html>
