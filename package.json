@@ -17,5 +17,8 @@
 	"bugs": {
 		"url": "https://github.com/IRFANSARI/URL-Shortener/issues"
 	},
-	"homepage": "https://github.com/IRFANSARI/URL-Shortener#readme"
+	"homepage": "https://github.com/IRFANSARI/URL-Shortener#readme",
+	"dependencies": {
+		"mysql": "^2.18.1"
+	}
 }

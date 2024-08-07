@@ -3,6 +3,7 @@ const http = require('http');
 const url = require('url');
 const querystring = require('querystring');
 const path = require('path');
+const sqlQueries = require('./database/sqlQueries.js');
 const hostname = 'http://127.0.0.1/';
 
 const homepage = fs.readFileSync('./template/index.html');
@@ -16,24 +17,23 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(homepage);
   } else if (pathname === '/' && req.method === 'POST') {
+    let temp = '';
     let body = '';
 
-    // Collect data chunks
     req.on('data', (chunk) => {
       body += chunk.toString();
     });
 
-    const longURL = querystring.parse(body).url;
-    const shortURL =
-      hostname +
-      Math.random().toString(36).substring(6, 8) +
-      Date.now().toString(36).substring(2) +
-      Math.random().toString(36).substring(6, 8);
+    req.on('end', () => {
+      const longURL = querystring.parse(body).url;
+      const username = 'irfansari';
+      const shortURL = sqlQueries.addURL(longURL, username);
 
-    // check if data is already stored
-    // if not store it in database
+      // check if data is already stored
+      // if not store it in database
 
-    res.end(shortURL);
+      res.end(shortURL);
+    });
   } else if (pathname === '/styles.css') {
     res.writeHead(200, { 'Content-Type': 'text/css' });
     res.end(styles);
