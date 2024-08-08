@@ -1,5 +1,5 @@
 const { db } = require('./connectDB.js');
-const hostname = 'http://127.0.0.1:8080/';
+const hostname = process.env.URL;
 
 function getShortURL(longURL, username) {
   return new Promise((resolve, reject) => {

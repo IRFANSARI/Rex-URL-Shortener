@@ -1,10 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const sqlQueries = require('./database/sqlQueries.js');
 
-const hostname = 'http://127.0.0.1:8080';
+const hostname = process.env.URL;
 const server = express();
-const port = 8080;
+const port = process.env.PORT;
 
 const publicDirPath = path.join(__dirname, 'public');
 server.use(express.static(publicDirPath));
@@ -16,7 +17,7 @@ server.get('/', (req, res) => {
 
 server.post('/', (req, res) => {
   const longURL = req.body.url;
-  const username = 'irfansari';
+  const username = 'apwemf';
 
   sqlQueries.getShortURL(longURL, username).then((shortURL) => {
     res.send(shortURL);
@@ -24,7 +25,7 @@ server.post('/', (req, res) => {
 });
 
 server.get('*', (req, res) => {
-  const shortURL = hostname + req.originalUrl;
+  const shortURL = hostname + req.originalUrl.substring(1);
 
   sqlQueries.getLongURL(shortURL).then((longURL) => {
     if (longURL === undefined) {
@@ -35,6 +36,6 @@ server.get('*', (req, res) => {
   });
 });
 
-server.listen(port, () => {
+server.listen(port || 8080, () => {
   console.log(`Server running at http://127.0.0.1:${port}/`);
 });
