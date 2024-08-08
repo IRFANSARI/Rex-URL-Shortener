@@ -3,7 +3,7 @@ const hostname = process.env.URL;
 
 function getShortURL(longURL, username) {
   return new Promise((resolve, reject) => {
-    const sql1 = `select short_url from urls where long_url = "${longURL}" and username = "${username}"`;
+    const sql1 = `select short_url from urls where long_url = '${longURL}' and username = '${username}'`;
 
     db.query(sql1, (err, data) => {
       if (data.length > 0) {
@@ -16,7 +16,7 @@ function getShortURL(longURL, username) {
           Math.random().toString(36).substring(6, 8) +
           username.substring(3, 6);
 
-        const sql2 = `insert into urls (short_url, long_url, username) values ("${shortURL}", "${longURL}", "${username}")`;
+        const sql2 = `insert into urls (short_url, long_url, username) values ('${shortURL}', '${longURL}', '${username}')`;
         db.query(sql2);
 
         resolve(shortURL);
@@ -27,7 +27,7 @@ function getShortURL(longURL, username) {
 
 function getLongURL(shortURL) {
   return new Promise((resolve, reject) => {
-    const sql = `select long_url from urls where short_url = "${shortURL}"`;
+    const sql = `select * from urls where short_url = '${shortURL}'`;
 
     db.query(sql, (err, data) => {
       if (data.length == 0) {
