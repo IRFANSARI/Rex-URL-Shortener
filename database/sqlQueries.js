@@ -3,7 +3,7 @@ const hostname = 'http://127.0.0.1:8080/';
 
 function getShortURL(longURL, username) {
   return new Promise((resolve, reject) => {
-    const sql1 = `select * from urls where long_url = "${longURL}" and username = "${username}"`;
+    const sql1 = `select short_url from urls where long_url = "${longURL}" and username = "${username}"`;
 
     db.query(sql1, (err, data) => {
       if (data.length > 0) {
@@ -25,4 +25,18 @@ function getShortURL(longURL, username) {
   });
 }
 
-module.exports = { getShortURL };
+function getLongURL(shortURL) {
+  return new Promise((resolve, reject) => {
+    const sql = `select long_url from urls where short_url = "${shortURL}"`;
+
+    db.query(sql, (err, data) => {
+      if (data.length == 0) {
+        resolve(undefined);
+      } else {
+        resolve(data[0].long_url);
+      }
+    });
+  });
+}
+
+module.exports = { getShortURL, getLongURL };

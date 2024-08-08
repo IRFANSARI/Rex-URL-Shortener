@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const sqlQueries = require('./database/sqlQueries.js');
 
+const hostname = 'http://127.0.0.1:8080';
 const server = express();
 const port = 8080;
 
@@ -22,12 +23,12 @@ server.post('/', (req, res) => {
   });
 });
 
-server.get('/dir', (req, res) => {
-  res.send('Hello Brother');
-});
-
 server.get('*', (req, res) => {
-  res.send('new fear unlock');
+  const shortURL = hostname + req.originalUrl;
+
+  sqlQueries.getLongURL(shortURL).then((longURL) => {
+    res.redirect(longURL);
+  });
 });
 
 server.listen(port, () => {
