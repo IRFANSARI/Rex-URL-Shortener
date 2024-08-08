@@ -19,6 +19,7 @@
 	},
 	"homepage": "https://github.com/IRFANSARI/URL-Shortener#readme",
 	"dependencies": {
+		"express": "^4.19.2",
 		"mysql": "^2.18.1"
 	}
 }
