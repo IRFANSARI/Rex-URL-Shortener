@@ -27,7 +27,11 @@ server.get('*', (req, res) => {
   const shortURL = hostname + req.originalUrl;
 
   sqlQueries.getLongURL(shortURL).then((longURL) => {
-    res.redirect(longURL);
+    if (longURL === undefined) {
+      res.status(404).send('404 Page not Found. Please check your link.');
+    } else {
+      res.redirect(longURL);
+    }
   });
 });
 
