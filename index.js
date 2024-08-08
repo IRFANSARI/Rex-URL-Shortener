@@ -37,5 +37,5 @@ server.get('*', (req, res) => {
 });
 
 server.listen(port || 8080, () => {
-  console.log(`Server running at http://127.0.0.1:${port}/`);
+  console.log(`Server running at ${hostname}`);
 });
