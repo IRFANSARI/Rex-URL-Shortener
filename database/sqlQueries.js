@@ -39,4 +39,36 @@ function getLongURL(shortURL) {
   });
 }
 
-module.exports = { getShortURL, getLongURL };
+function addUser(username, password) {
+  return new Promise((resolve, reject) => {
+    sql1 = `select * from users where username = '${username}'`;
+
+    db.query(sql1, (err, data) => {
+      if (data.length > 0) {
+        resolve('Username already exists, Try again');
+      } else {
+        sql2 = `insert into users (username, password) values ('${username}', '${password}')`;
+
+        db.query(sql2, (err) => {
+          resolve('Success');
+        });
+      }
+    });
+  });
+}
+
+function getUser(username, password) {
+  return new Promise((resolve, reject) => {
+    sql = `select * from users where username = '${username}' and password = '${password}'`;
+
+    db.query(sql, (err, data) => {
+      if (data.length == 0) {
+        resolve('Either username or password is incorrect');
+      } else {
+        resolve('Success');
+      }
+    });
+  });
+}
+
+module.exports = { getShortURL, getLongURL, addUser, getUser };
