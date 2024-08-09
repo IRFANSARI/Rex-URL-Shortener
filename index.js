@@ -102,13 +102,13 @@ server.post('/home', (req, res) => {
       const username = user;
 
       sqlQueries.getShortURL(longURL, username).then((shortURL) => {
-        res.send(shortURL);
+        res.json({ message: shortURL });
       });
     } else {
-      res.redirect('/');
+      res.json({ redirect: '/' });
     }
   } else {
-    res.redirect('/');
+    res.json({ redirect: '/' });
   }
 });
 

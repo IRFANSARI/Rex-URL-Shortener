@@ -73,7 +73,11 @@
             type: 'POST',
             data: { url: longURL },
             success: function (response) {
-              $('#short-url').val(response);
+              if (response.redirect) {
+                window.location.href = response.redirect;
+              } else {
+                $('#short-url').val(response.message);
+              }
             },
           });
         });
