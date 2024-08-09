@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rex URL Shortener</title>
     <link rel="stylesheet" href="./css/home.css" />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
   </head>
   <body>
     <div class="container">
@@ -43,58 +37,7 @@
 
     <div id="toaster" class="toaster"></div>
 
-    <script>
-      $(document).ready(function () {
-        $('#shorten').on('click', function (e) {
-          e.preventDefault();
-          const longURL = $('#long-url').val();
-
-          const schemes = [
-            'http://',
-            'https://',
-            'ftp://',
-            'ftps://',
-            'mailto:',
-            'file://',
-          ];
-
-          // Check if the URL starts with any of the defined schemes
-          const startsWithScheme = schemes.some((scheme) =>
-            longURL.startsWith(scheme)
-          );
-
-          if (!startsWithScheme) {
-            showToast('Invalid URL !!!');
-            return;
-          }
-
-          $.ajax({
-            url: '/home',
-            type: 'POST',
-            data: { url: longURL },
-            success: function (response) {
-              if (response.redirect) {
-                window.location.href = response.redirect;
-              } else {
-                $('#short-url').val(response.message);
-              }
-            },
-          });
-        });
-
-        $('#copy-btn').on('click', function () {
-          const shortUrl = $('#short-url');
-          shortUrl.select();
-          document.execCommand('copy');
-          showToast('Copied on Clipboard');
-        });
-
-        function showToast(message) {
-          const toaster = $('#toaster');
-          toaster.text(message);
-          toaster.fadeIn(400).delay(1000).fadeOut(400);
-        }
-      });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./js/home.js"></script>
   </body>
 </html>

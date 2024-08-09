@@ -24,10 +24,10 @@ server.get('/', (req, res) => {
     if (auth.getCookie(user, uuid)) {
       res.redirect('/home');
     } else {
-      res.sendFile(path.join(publicDirPath, 'index2.html'));
+      res.sendFile(path.join(publicDirPath, 'index1.html'));
     }
   } else {
-    res.sendFile(path.join(publicDirPath, 'index2.html'));
+    res.sendFile(path.join(publicDirPath, 'index1.html'));
   }
 });
 

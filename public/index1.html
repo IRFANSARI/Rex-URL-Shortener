@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rex URL Shortener</title>
+    <link rel="stylesheet" href="./css/index.css" />
+  </head>
+  <body>
+    <div class="header">
+      <a href="." id="logo-link"><div class="logo">Rex URL Shortener</div></a>
+      <div class="button-container">
+        <!-- Toggle switch for dark/light mode -->
+        <input type="checkbox" id="theme-toggle" class="theme-checkbox" />
+        <button onclick="window.location.href='#';">Login</button>
+        <button onclick="window.location.href='#';">Sign Up</button>
+
+        <!-- Login Modal -->
+        <div id="login-modal" class="modal">
+          <div class="modal-content">
+            <span class="close" id="login-close">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form">
+              <div class="form-group">
+                <label for="login-username">Username</label>
+                <input
+                  type="text"
+                  id="login-username"
+                  name="username"
+                  class="input-field"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="login-password">Password</label>
+                <input
+                  type="password"
+                  id="login-password"
+                  name="password"
+                  class="input-field"
+                  required
+                />
+                <div class="password-toggle">
+                  <input
+                    type="checkbox"
+                    id="toggle-login-password"
+                    class="password-checkbox"
+                  />
+                  <label for="toggle-login-password">Show Password</label>
+                </div>
+              </div>
+              <div id="login-error" class="error-message"></div>
+              <button type="submit">Login</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Signup Modal -->
+        <div id="signup-modal" class="modal">
+          <div class="modal-content">
+            <span class="close" id="signup-close">&times;</span>
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+              <div class="form-group">
+                <label for="signup-username">Username</label>
+                <input
+                  type="text"
+                  id="signup-username"
+                  name="username"
+                  class="input-field"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input
+                  type="password"
+                  id="signup-password"
+                  name="password"
+                  class="input-field"
+                  required
+                />
+                <div class="password-toggle">
+                  <input
+                    type="checkbox"
+                    id="toggle-signup-password"
+                    class="password-checkbox"
+                  />
+                  <label id="show-pass-label" for="toggle-signup-password"
+                    >Show Password</label
+                  >
+                </div>
+              </div>
+              <div id="signup-error" class="error-message"></div>
+              <button type="submit">Register</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./js/index1.js"></script>
+  </body>
+</html>
