@@ -1,7 +1,7 @@
 {
   "name": "rex-url-shortener",
   "version": "1.0.0",
-  "description": "",
+  "description": "A URL Shortening web application that converts long URLs into shorter links, allowing easier sharing and tracking of link usage.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -21,6 +21,7 @@
   "dependencies": {
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
     "express": "^4.19.2",
     "md5": "^2.3.0",
     "mysql": "^2.18.1",

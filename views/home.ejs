@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rex URL Shortener</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  </head>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', monospace;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #1e1e1e;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    .button-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: #ffffff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .theme-toggle-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .theme-icon {
+      font-size: 1.5rem;
+      vertical-align: middle;
+    }
+
+    .theme-icon.sun {
+      margin-right: 15px;
+    }
+
+    .theme-checkbox {
+      --toggle-size: 10px;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 4em;
+      height: 2em;
+      background: linear-gradient(to right, #efefef 50%, #2a2a2a 50%) no-repeat;
+      background-size: 205%;
+      background-position: 0;
+      transition: 0.4s;
+      border-radius: 99em;
+      position: relative;
+      cursor: pointer;
+      font-size: var(--toggle-size);
+      vertical-align: middle;
+    }
+
+    .theme-checkbox::before {
+      content: '';
+      width: 1.4em;
+      height: 1.4em;
+      position: absolute;
+      top: 0.3em;
+      left: 0.3em;
+      background: linear-gradient(to right, #efefef 50%, #2a2a2a 50%) no-repeat;
+      background-size: 205%;
+      background-position: 100%;
+      border-radius: 50%;
+      transition: 0.4s;
+    }
+
+    .theme-checkbox:checked::before {
+      left: calc(100% - 1.4em - 0.3em);
+      background-position: 0;
+    }
+
+    .theme-checkbox:checked {
+      background-position: 100%;
+    }
+
+    body.light-mode .theme-icon.moon {
+      color: #000000;
+      font-size: 20px;
+    }
+
+    body.light-mode .theme-icon.sun {
+      color: #f39c12;
+    }
+
+    body:not(.light-mode) .theme-icon.moon {
+      color: #f39c12;
+      font-size: 20px;
+    }
+
+    body:not(.light-mode) .theme-icon.sun {
+      color: rgb(255, 255, 255);
+    }
+
+    body.light-mode {
+      background-color: #f0f0f0;
+      color: #333333;
+    }
+
+    .header.light-mode {
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    button.light-mode {
+      background-color: #007bff;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+    }
+
+    .close {
+      color: #aaa;
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #fff;
+    }
+
+    .modal-content .form-group {
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    .modal-content .form-group label {
+      display: block;
+      font-weight: bold;
+    }
+
+    .modal-content .form-group .input-field {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #333;
+      border-radius: 5px;
+      background-color: #333;
+      color: #fff;
+    }
+
+    .modal-content .error-message {
+      color: red;
+      margin-bottom: 10px;
+    }
+
+    .modal-content button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: #ffffff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-weight: bold;
+    }
+
+    .modal-content button:hover {
+      background-color: #0056b3;
+    }
+
+    body.light-mode .modal-content {
+      background-color: #ffffff;
+      color: #333333;
+    }
+
+    body.light-mode .modal-content .form-group input {
+      border: 1px solid #ccc;
+      background-color: #fff;
+      color: #333;
+    }
+
+    body.light-mode .modal-content button {
+      background-color: #007bff;
+    }
+
+    body.light-mode .modal-content button:hover {
+      background-color: #0056b3;
+    }
+
+    .modal-content .form-group button {
+      margin-top: 10px;
+      padding: 8px 15px;
+      font-size: 0.9rem;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-weight: bold;
+    }
+
+    .modal-content .form-group button:hover {
+      background-color: #0056b3;
+    }
+
+    .password-toggle {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      justify-content: flex-start;
+    }
+
+    .password-checkbox {
+      margin-right: 5px;
+      width: 15px;
+      height: 15px;
+    }
+
+    .password-toggle label {
+      font-size: 0.9rem;
+      color: #e0e0e0;
+      cursor: pointer;
+    }
+
+    body.light-mode .password-toggle label {
+      color: #333;
+    }
+
+    #logo-link {
+      text-decoration: none;
+    }
+
+    .profile-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #007bff;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      border: 2px solid #e0e0e0;
+      text-align: center;
+    }
+
+    body.light-mode .profile-pic {
+      border: 2px solid #333;
+    }
+
+    .profile-dropdown {
+      display: none;
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      min-width: 150px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      z-index: 1;
+    }
+
+    body.light-mode .profile-dropdown {
+      background-color: #ffffff;
+      color: #333333;
+    }
+
+    .dropdown-item {
+      padding: 12px 16px;
+      text-align: left;
+      cursor: pointer;
+      border-bottom: 1px solid #333;
+    }
+
+    body.light-mode .dropdown-item {
+      border-bottom: 1px solid #ccc;
+    }
+
+    .dropdown-item:hover {
+      background-color: #333;
+    }
+
+    body.light-mode .dropdown-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    #user-name {
+      cursor: default;
+      font-weight: bold;
+    }
+
+    #sign-out:hover {
+      background-color: #ff3b3b;
+      color: #ffffff;
+    }
+
+    body.light-mode #sign-out:hover {
+      background-color: #ff3b3b;
+      color: #ffffff;
+    }
+
+    :root {
+      --container-bg: #1e1e1e;
+      --container-shadow: rgba(0, 0, 0, 0.3);
+      --container-border: #333;
+      --button-bg: #007bff;
+      --button-hover-bg: #0056b3;
+      --copy-btn-bg: #28a745;
+      --copy-btn-hover-bg: #218838;
+      --footer-color: #aaa;
+      --toaster-bg: #333;
+      --toaster-color: #fff;
+    }
+
+    .theme-light {
+      --container-bg: #fff;
+      --container-shadow: rgba(0, 0, 0, 0.1);
+      --container-border: #ddd;
+      --button-bg: #007bff;
+      --button-hover-bg: #0056b3;
+      --copy-btn-bg: #28a745;
+      --copy-btn-hover-bg: #218838;
+      --footer-color: #333;
+      --toaster-bg: #fff;
+      --toaster-color: #333;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: var(--container-bg);
+      padding: 20px;
+      box-shadow: 0 0 10px var(--container-shadow);
+      border: 1px solid var(--container-border);
+      border-radius: 8px;
+      text-align: center;
+      margin: auto;
+      position: relative;
+      margin-top: 7%;
+    }
+
+    header h1 {
+      font-size: 2em;
+      color: rgb(122, 122, 122);
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    textarea {
+      width: 80%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+      resize: none;
+      font-weight: bold;
+      overflow-y: auto;
+      min-height: 4em;
+      max-height: 8em;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background-color: var(--button-bg);
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: var(--button-hover-bg);
+    }
+
+    #short-url-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    #short-url {
+      width: 70%;
+      padding: 10px;
+      border: 1px solid #aaa;
+      border-radius: 4px 0 0 4px;
+      font-size: 1em;
+      margin-right: -1px;
+      font-weight: bold;
+      color: #333;
+      background-color: #f0f0f0;
+    }
+
+    #short-url::placeholder {
+      color: #aaa;
+      font-weight: bold;
+    }
+
+    #copy-btn {
+      padding: 10px;
+      background-color: var(--copy-btn-bg);
+      color: #fff;
+      border: 1px solid var(--copy-btn-bg);
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    #copy-btn:hover {
+      background-color: var(--copy-btn-hover-bg);
+    }
+
+    footer p {
+      margin-top: 20px;
+      font-size: 0.8em;
+      font-weight: bold;
+      color: var(--footer-color);
+    }
+
+    .toaster {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--toaster-bg);
+      color: var(--toaster-color);
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+      z-index: 1000;
+    }
+
+    .manage-links-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #manage-links {
+      padding: 15px 30px;
+      background-color: var(--button-bg);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #manage-links:hover {
+      background-color: var(--button-hover-bg);
+    }
+  </style>
+
+  <body>
+    <div class="header">
+      <a href="/" id="logo-link"><div class="logo">Rex URL Shortener</div></a>
+      <div class="button-container">
+        <span class="theme-icon moon">🌙</span>
+        <input type="checkbox" id="theme-toggle" class="theme-checkbox" />
+        <span class="theme-icon sun">☀️</span>
+
+        <% if (!isLoggedIn) { %>
+        <button onclick="window.location.href='#';">Login</button>
+        <button onclick="window.location.href='#';">Sign Up</button>
+        <% } else { %>
+        <div class="profile-container">
+          <div id="profile-pic" class="profile-pic">👤</div>
+          <div id="profile-dropdown" class="profile-dropdown">
+            <div class="dropdown-item" id="user-name"><%= username %></div>
+            <div class="dropdown-item" id="sign-out">Sign Out</div>
+          </div>
+        </div>
+        <% } %>
+
+        <div id="login-modal" class="modal">
+          <div class="modal-content">
+            <span class="close" id="login-close">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form">
+              <div class="form-group">
+                <label for="login-username">Username</label>
+                <input
+                  type="text"
+                  id="login-username"
+                  name="username"
+                  class="input-field"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="login-password">Password</label>
+                <input
+                  type="password"
+                  id="login-password"
+                  name="password"
+                  class="input-field"
+                  required
+                />
+                <div class="password-toggle">
+                  <input
+                    type="checkbox"
+                    id="toggle-login-password"
+                    class="password-checkbox"
+                  />
+                  <label for="toggle-login-password">Show Password</label>
+                </div>
+              </div>
+              <div id="login-error" class="error-message"></div>
+              <button type="submit">Login</button>
+            </form>
+          </div>
+        </div>
+
+        <div id="signup-modal" class="modal">
+          <div class="modal-content">
+            <span class="close" id="signup-close">&times;</span>
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+              <div class="form-group">
+                <label for="signup-username">Username</label>
+                <input
+                  type="text"
+                  id="signup-username"
+                  name="username"
+                  class="input-field"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input
+                  type="password"
+                  id="signup-password"
+                  name="password"
+                  class="input-field"
+                  required
+                />
+                <div class="password-toggle">
+                  <input
+                    type="checkbox"
+                    id="toggle-signup-password"
+                    class="password-checkbox"
+                  />
+                  <label id="show-pass-label" for="toggle-signup-password"
+                    >Show Password</label
+                  >
+                </div>
+              </div>
+              <div id="signup-error" class="error-message"></div>
+              <button type="submit">Register</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="url-shortener-container">
+      <header>
+        <h1>Rex URL Shortener</h1>
+      </header>
+      <main>
+        <form id="shorten-form">
+          <textarea
+            id="long-url"
+            placeholder="Enter the long URL"
+            spellcheck="false"
+            required
+          ></textarea>
+          <button id="shorten" type="submit">Shorten URL</button>
+        </form>
+        <div id="short-url-container">
+          <input
+            type="text"
+            id="short-url"
+            placeholder="Shortened URL will appear here"
+            readonly
+          />
+          <button id="copy-btn">Copy</button>
+        </div>
+      </main>
+      <footer>
+        <p>&copy; Made by IRFANSARI</p>
+      </footer>
+    </div>
+
+    <% if (isLoggedIn) { %>
+    <div class="manage-links-container">
+      <button id="manage-links" onclick="window.location.href = '/links';">
+        Manage My Links
+      </button>
+    </div>
+    <% } %>
+
+    <div id="toaster" class="toaster"></div>
+  </body>
+
+  <script>
+    $(document).ready(function () {
+      const $body = $('body');
+      const $header = $('.header');
+      const $buttons = $('button');
+      const $themeToggle = $('#theme-toggle');
+
+      const currentTheme = localStorage.getItem('theme');
+      if (currentTheme === 'light') {
+        $body.addClass('light-mode');
+        $header.addClass('light-mode');
+        $buttons.addClass('light-mode');
+        $('.container').addClass('theme-light');
+        $themeToggle.prop('checked', true);
+      } else {
+        localStorage.setItem('theme', 'dark');
+        $themeToggle.prop('checked', false);
+      }
+
+      $themeToggle.on('change', function () {
+        const isLightMode = $themeToggle.is(':checked');
+        $body.toggleClass('light-mode', isLightMode);
+        $header.toggleClass('light-mode', isLightMode);
+        $buttons.toggleClass('light-mode', isLightMode);
+        $('.container').toggleClass('theme-light', isLightMode);
+
+        localStorage.setItem('theme', isLightMode ? 'light' : 'dark');
+      });
+
+      const $loginModal = $('#login-modal');
+      const $signupModal = $('#signup-modal');
+      const $loginClose = $('#login-close');
+      const $signupClose = $('#signup-close');
+
+      $('button').click(function () {
+        if ($(this).text() === 'Login') {
+          $loginModal.show();
+        } else if ($(this).text() === 'Sign Up') {
+          $signupModal.show();
+        }
+      });
+
+      const clearFormData = () => {
+        $('#signup-username').val('');
+        $('#signup-password').val('');
+        $('#login-username').val('');
+        $('#login-password').val('');
+        $('#login-error').text('');
+        $('#signup-error').text('');
+      };
+
+      $loginClose.click(function () {
+        clearFormData();
+        $loginModal.hide();
+      });
+
+      $signupClose.click(function () {
+        clearFormData();
+        $signupModal.hide();
+      });
+
+      $(window).click(function (event) {
+        if ($(event.target).is('.modal')) {
+          clearFormData();
+          $loginModal.hide();
+          $signupModal.hide();
+        }
+      });
+
+      $('#login-form').submit(function (event) {
+        event.preventDefault();
+
+        const username = $('#login-username').val();
+        const password = $('#login-password').val();
+
+        $.ajax({
+          url: '/login',
+          type: 'POST',
+          data: { username, password },
+          success: function (response) {
+            if (response.redirect) {
+              window.location.href = response.redirect;
+            } else {
+              $('#login-error').text(response.message);
+            }
+          },
+        });
+      });
+
+      $('#signup-form').submit(function (event) {
+        event.preventDefault();
+
+        const username = $('#signup-username').val();
+        const password = $('#signup-password').val();
+
+        $.ajax({
+          url: '/signup',
+          type: 'POST',
+          data: { username, password },
+          success: function (response) {
+            if (response.redirect) {
+              window.location.href = response.redirect;
+            } else {
+              $('#signup-error').text(response.message);
+            }
+          },
+        });
+      });
+
+      $('#toggle-login-password').change(function () {
+        const $passwordField = $('#login-password');
+        const type = $(this).is(':checked') ? 'text' : 'password';
+        $passwordField.attr('type', type);
+      });
+
+      $('#toggle-signup-password').change(function () {
+        const $passwordField = $('#signup-password');
+        const type = $(this).is(':checked') ? 'text' : 'password';
+        $passwordField.attr('type', type);
+      });
+
+      $('#profile-icon').click(function () {
+        $('#logout-menu').toggle();
+      });
+
+      const $profilePic = $('#profile-pic');
+      const $profileDropdown = $('#profile-dropdown');
+
+      $profilePic.on('click', function () {
+        $profileDropdown.toggle();
+      });
+
+      $(window).on('click', function (event) {
+        if (!$(event.target).closest('.profile-container').length) {
+          $profileDropdown.hide();
+        }
+      });
+
+      $('#sign-out').on('click', function () {
+        window.location.href = '/signout';
+      });
+
+      $('#shorten').on('click', function (e) {
+        e.preventDefault();
+        const longURL = $('#long-url').val();
+
+        $.ajax({
+          url: '/shorten',
+          type: 'POST',
+          data: { url: longURL },
+          success: function (response) {
+            if (response.redirect) {
+              window.location.href = response.redirect;
+            } else if (response.error) {
+              showToast(response.error);
+            } else {
+              $('#short-url').val(response.message);
+            }
+          },
+        });
+      });
+
+      $('#copy-btn').on('click', function () {
+        const shortUrl = $('#short-url');
+        shortUrl.select();
+        document.execCommand('copy');
+        showToast('Copied on Clipboard');
+      });
+
+      function showToast(message) {
+        const toaster = $('#toaster');
+        toaster.text(message);
+        toaster.fadeIn(400).delay(1000).fadeOut(400);
+      }
+    });
+  </script>
+</html>

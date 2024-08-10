@@ -71,4 +71,14 @@ function getUser(username, password) {
   });
 }
 
-module.exports = { getShortURL, getLongURL, addUser, getUser };
+function getLinks(username) {
+  return new Promise((resolve, reject) => {
+    sql = `select * from urls order by id desc`;
+
+    db.query(sql, (err, data) => {
+      resolve(data);
+    });
+  });
+}
+
+module.exports = { getShortURL, getLongURL, addUser, getUser, getLinks };

@@ -15,20 +15,30 @@ const publicDirPath = path.join(__dirname, 'public');
 server.use(express.static(publicDirPath));
 server.use(express.urlencoded({ extended: true }));
 server.use(cookieParser());
+server.set('view engine', 'ejs');
 
-server.get('/', (req, res) => {
+server.use((req, res, next) => {
   if (req.cookies) {
     user = req.cookies.user;
     uuid = req.cookies.uuid;
 
     if (auth.getCookie(user, uuid)) {
-      res.redirect('/home');
+      res.locals.isLoggedIn = true;
+      res.locals.username = user;
     } else {
-      res.sendFile(path.join(publicDirPath, 'index1.html'));
+      res.locals.isLoggedIn = false;
+      res.locals.username = '';
     }
   } else {
-    res.sendFile(path.join(publicDirPath, 'index1.html'));
+    res.locals.isLoggedIn = false;
+    res.locals.username = '';
   }
+
+  next();
+});
+
+server.get('/', (req, res) => {
+  res.render('home');
 });
 
 server.get('/signout', (req, res) => {
@@ -52,7 +62,7 @@ server.post('/login', (req, res) => {
       auth.setCookie(username, uuid);
       res.cookie('user', username, { maxAge: 260000 });
       res.cookie('uuid', uuid, { maxAge: 260000 }); // Set for 3 days
-      res.json({ redirect: '/home' });
+      res.json({ redirect: '/' });
     } else {
       res.json({ message: result });
     }
@@ -70,46 +80,59 @@ server.post('/signup', (req, res) => {
       auth.setCookie(username, uuid);
       res.cookie('user', username, { maxAge: 260000 });
       res.cookie('uuid', uuid, { maxAge: 260000 }); // Set for 3 days
-      res.json({ redirect: '/home' });
+      res.json({ redirect: '/' });
     } else {
       res.json({ message: result });
     }
   });
 });
 
-server.get('/home', (req, res) => {
-  if (req.cookies) {
-    user = req.cookies.user;
-    uuid = req.cookies.uuid;
-
-    if (auth.getCookie(user, uuid)) {
-      res.sendFile(path.join(publicDirPath, 'home.html'));
-    } else {
-      res.redirect('/');
-    }
-  } else {
-    res.redirect('/');
-  }
-});
-
-server.post('/home', (req, res) => {
+server.post('/shorten', (req, res) => {
   if (req.cookies) {
     user = req.cookies.user;
     uuid = req.cookies.uuid;
 
     if (auth.getCookie(user, uuid)) {
       const longURL = req.body.url;
-      const username = user;
+      const username = req.cookies.user;
 
-      sqlQueries.getShortURL(longURL, username).then((shortURL) => {
-        res.json({ message: shortURL });
-      });
+      const schemes = [
+        'http://',
+        'https://',
+        'ftp://',
+        'ftps://',
+        'mailto:',
+        'file://',
+        'www.',
+      ];
+
+      const startsWithScheme = schemes.some((scheme) =>
+        longURL.startsWith(scheme)
+      );
+
+      if (!startsWithScheme) {
+        res.json({ error: 'Invalid URL !!!' });
+      } else {
+        sqlQueries.getShortURL(longURL, username).then((shortURL) => {
+          res.json({ message: shortURL });
+        });
+      }
     } else {
-      res.json({ redirect: '/' });
+      res.json({ error: 'Please Login or SignUp to use it' });
     }
   } else {
-    res.json({ redirect: '/' });
+    res.json({ error: 'Please Login or SignUp to use it' });
   }
+});
+
+server.get('/links', (req, res) => {
+  const username = req.cookies.user;
+
+  sqlQueries.getLinks(username).then((data) => {
+    res.send(data);
+  });
+
+  // res.render('links');
 });
 
 server.get('*', (req, res) => {
@@ -117,7 +140,7 @@ server.get('*', (req, res) => {
 
   sqlQueries.getLongURL(shortURL).then((longURL) => {
     if (longURL === undefined) {
-      res.status(404).send('404 Page not Found. Please check your link.');
+      res.status(404).render('404');
     } else {
       res.redirect(longURL);
     }

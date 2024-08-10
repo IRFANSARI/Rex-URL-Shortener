@@ -4,16 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rex URL Shortener</title>
-    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="stylesheet" href="./css/links.css" />
   </head>
   <body>
     <div class="header">
-      <a href="." id="logo-link"><div class="logo">Rex URL Shortener</div></a>
+      <a href="/" id="logo-link"><div class="logo">Rex URL Shortener</div></a>
       <div class="button-container">
-        <!-- Toggle switch for dark/light mode -->
+        <span class="theme-icon moon">🌙</span>
         <input type="checkbox" id="theme-toggle" class="theme-checkbox" />
+        <span class="theme-icon sun">☀️</span>
+
+        <% if (!isLoggedIn) { %>
         <button onclick="window.location.href='#';">Login</button>
         <button onclick="window.location.href='#';">Sign Up</button>
+        <% } else { %>
+        <div class="profile-container">
+          <div id="profile-pic" class="profile-pic">👤</div>
+          <div id="profile-dropdown" class="profile-dropdown">
+            <div class="dropdown-item" id="user-name"><%= username %></div>
+            <div class="dropdown-item" id="sign-out">Sign Out</div>
+          </div>
+        </div>
+        <% } %>
 
         <!-- Login Modal -->
         <div id="login-modal" class="modal">
@@ -100,6 +112,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="./js/index1.js"></script>
+    <script src="./js/links.js"></script>
   </body>
 </html>

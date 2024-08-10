@@ -121,4 +121,29 @@ $(document).ready(function () {
     const type = $(this).is(':checked') ? 'text' : 'password';
     $passwordField.attr('type', type);
   });
+
+  $('#profile-icon').click(function () {
+    $('#logout-menu').toggle();
+  });
+
+  const $profilePic = $('#profile-pic');
+  const $profileDropdown = $('#profile-dropdown');
+
+  // Toggle the dropdown when profile picture is clicked
+  $profilePic.on('click', function () {
+    $profileDropdown.toggle();
+  });
+
+  // Hide dropdown when clicking outside of it
+  $(window).on('click', function (event) {
+    if (!$(event.target).closest('.profile-container').length) {
+      $profileDropdown.hide();
+    }
+  });
+
+  // Sign out functionality
+  $('#sign-out').on('click', function () {
+    // Redirect to logout route
+    window.location.href = '/signout';
+  });
 });
