@@ -73,7 +73,7 @@ function getUser(username, password) {
 
 function getLinks(username) {
   return new Promise((resolve, reject) => {
-    sql = `select * from urls order by id desc`;
+    sql = `select * from urls where username='${username}' order by id desc`;
 
     db.query(sql, (err, data) => {
       resolve(data);
@@ -81,4 +81,17 @@ function getLinks(username) {
   });
 }
 
-module.exports = { getShortURL, getLongURL, addUser, getUser, getLinks };
+function removeLink(username, shortURL) {
+  sql = `delete from urls where username='${username}' and short_url='${shortURL}'`;
+
+  db.query(sql);
+}
+
+module.exports = {
+  getShortURL,
+  getLongURL,
+  addUser,
+  getUser,
+  getLinks,
+  removeLink,
+};

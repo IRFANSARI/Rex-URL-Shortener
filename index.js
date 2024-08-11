@@ -11,8 +11,6 @@ const hostname = process.env.URL;
 const server = express();
 const port = process.env.PORT;
 
-const publicDirPath = path.join(__dirname, 'public');
-server.use(express.static(publicDirPath));
 server.use(express.urlencoded({ extended: true }));
 server.use(cookieParser());
 server.set('view engine', 'ejs');
@@ -61,7 +59,7 @@ server.post('/login', (req, res) => {
 
       auth.setCookie(username, uuid);
       res.cookie('user', username, { maxAge: 260000 });
-      res.cookie('uuid', uuid, { maxAge: 260000 }); // Set for 3 days
+      res.cookie('uuid', uuid, { maxAge: 260000 });
       res.json({ redirect: '/' });
     } else {
       res.json({ message: result });
@@ -79,7 +77,7 @@ server.post('/signup', (req, res) => {
 
       auth.setCookie(username, uuid);
       res.cookie('user', username, { maxAge: 260000 });
-      res.cookie('uuid', uuid, { maxAge: 260000 }); // Set for 3 days
+      res.cookie('uuid', uuid, { maxAge: 260000 });
       res.json({ redirect: '/' });
     } else {
       res.json({ message: result });
@@ -89,8 +87,8 @@ server.post('/signup', (req, res) => {
 
 server.post('/shorten', (req, res) => {
   if (req.cookies) {
-    user = req.cookies.user;
-    uuid = req.cookies.uuid;
+    const user = req.cookies.user;
+    const uuid = req.cookies.uuid;
 
     if (auth.getCookie(user, uuid)) {
       const longURL = req.body.url;
@@ -126,13 +124,44 @@ server.post('/shorten', (req, res) => {
 });
 
 server.get('/links', (req, res) => {
-  const username = req.cookies.user;
+  if (req.cookies) {
+    const user = req.cookies.user;
+    const uuid = req.cookies.uuid;
 
-  sqlQueries.getLinks(username).then((data) => {
-    res.send(data);
-  });
+    if (auth.getCookie(user, uuid)) {
+      const username = req.cookies.user;
 
-  // res.render('links');
+      sqlQueries.getLinks(username).then((data) => {
+        res.render('links', { data });
+      });
+    } else {
+      res.redirect('/');
+    }
+  } else {
+    res.redirect('/');
+  }
+});
+
+server.post('/delete', (req, res) => {
+  if (req.cookies) {
+    const user = req.cookies.user;
+    const uuid = req.cookies.uuid;
+
+    if (auth.getCookie(user, uuid)) {
+      const username = req.cookies.user;
+      const shortURL = req.body.shortURL;
+
+      sqlQueries.removeLink(username, shortURL);
+
+      return res.json({ success: true });
+    } else {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+  } else {
+    return res
+      .status(401)
+      .json({ success: false, message: 'No cookies found' });
+  }
 });
 
 server.get('*', (req, res) => {
