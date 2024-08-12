@@ -17,17 +17,25 @@ Please try to open it in PC, I am not a big frontend guy.
 
 ## Design
 - ### Backend Design
-  ![LongURL -> ShortURL](images/backend-design1.png)
-  ![ShortURL -> LongURL](images/backend-design2.png)
+  ![LongURL -> ShortURL](images/backend-design1.png) <br/>
+  *Figure 1: LongURL -> ShortURL* <br/><br/><br/>
+  ![ShortURL -> LongURL](images/backend-design2.png) <br/>
+  *Figure 2: ShortURL -> LongURL* <br/><br/>
 - ### Database Design
-  ![DataBase](images/backend-design3.png)
+  ![DataBase](images/backend-design3.png) <br/>
+  *Figure 3: DataBase Design* <br/><br/>
   
 ## Setup
-
+- First of all, clone the project on your local machine or open it in codespace.
+  ```
+  git clone https://github.com/IRFANSARI/Rex-URL-Shortener.git
+  ```
+- 
 
 
 ## Run
-
+- To run the Node server, just write ```npm start```.
+- If you want to run the server using nodemon use the command ```npm run dev```.
 
 At last, I would really like to thank you (yes you) for reading all this nonsense stuff. <br/>
 See you around, signing out....
