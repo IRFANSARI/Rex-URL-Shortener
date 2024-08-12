@@ -4,7 +4,8 @@ By the way, I have written the whole documentation to install and use this proje
 It was just a fun project, but hey if you find something that I should change feel free to send a pull request. <br/>
 Have Fun Guys !!! <br/>
 <br/>
-Here is the live website link: https://rex-url-shortener.onrender.com/
+Here is the live website link: https://rex-url-shortener.onrender.com/ <br/>
+Please try to open it in PC, I am not a big frontend guy.
 <br/>
 
 ## Table of Context
@@ -16,8 +17,11 @@ Here is the live website link: https://rex-url-shortener.onrender.com/
 
 ## Design
 - ### Backend Design
+  ![LongURL -> ShortURL](images/backend-design1.png)
+  ![ShortURL -> LongURL](images/backend-design2.png)
 - ### Database Design
-
+  ![DataBase](images/backend-design3.png)
+  
 ## Setup
 
 
