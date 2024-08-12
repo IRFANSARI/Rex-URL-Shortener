@@ -29,9 +29,29 @@ Please try to open it in PC, I am not a big frontend guy.
 - First of all, clone the project on your local machine or open it in codespace.
   ```
   git clone https://github.com/IRFANSARI/Rex-URL-Shortener.git
+  cd Rex-URL-Shortener
   ```
-- 
+- Copy the whole SQL code from DataBase_Schema.sql.
+- Start the MySQL server and run the copied SQL code to make the database which we will use in the project.
+- Now go to the project directory and make a new environment name ```.env```, nothing else just .env name file.
+- Paste the following code in that file.
+  ```
+  URL = http://127.0.0.1:8080/
+  PORT = 8080
+  
+  DB_HOST = {database_host}
+  DB_PORT = {database_PORT}
+  DB_USER = {database_user}
+  DB_PASS = {database_password}
+  DB_NAME = {database_name}
+  ```
 
+  If you are new, let me tell you these are secret information that should not be pushed on GitHub or told to anybody else.
+- Now, let's install the dependencies of the project just copy and paste this command to do that.
+  ```
+  npm install
+  ```
+- Now, you are all set to run the server.
 
 ## Run
 - To run the Node server, just write ```npm start```.
