@@ -8,7 +8,7 @@ Here is the live website link: https://rex-url-shortener.onrender.com/
 <br/>
 
 ## Table of Context
-- Design
+- [Go to Installation](#setup)
   - Backend Design
   - Database Design
 - Setup
