@@ -1,5 +1,5 @@
 # Rex-URL-Shortener
-As you have already guess, Rex URL Shortener is a url shortenting website. I made this this website to learn about backend and databse. I used Node JS, Express JS, MySQL and more technologies to make to this project. <br/>
+As you have already guessed, Rex URL Shortener is a url shortenting website. I made this this website to learn about backend and databse. I used Node JS, Express JS, MySQL and more technologies to make to this project. <br/>
 By the way, I have written the whole documentation to install and use this project. <br/>
 It was just a fun project, but hey if you find something that I should change feel free to send a pull request. <br/>
 Have Fun Guys !!! <br/>
