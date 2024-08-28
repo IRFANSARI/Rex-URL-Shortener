@@ -628,7 +628,6 @@ td:nth-child(1) {
           </div>
         </div>
 
-        <!-- Login Modal -->
         <div id="login-modal" class="modal">
           <div class="modal-content">
             <span class="close" id="login-close">&times;</span>
@@ -668,7 +667,6 @@ td:nth-child(1) {
           </div>
         </div>
 
-        <!-- Signup Modal -->
         <div id="signup-modal" class="modal">
           <div class="modal-content">
             <span class="close" id="signup-close">&times;</span>
@@ -798,101 +796,6 @@ td:nth-child(1) {
           localStorage.setItem('theme', isLightMode ? 'light' : 'dark');
         });
 
-        // Modal functionality
-        const $loginModal = $('#login-modal');
-        const $signupModal = $('#signup-modal');
-        const $loginClose = $('#login-close');
-        const $signupClose = $('#signup-close');
-
-        $('button').click(function () {
-          if ($(this).text() === 'Login') {
-            $loginModal.show();
-          } else if ($(this).text() === 'Sign Up') {
-            $signupModal.show();
-          }
-        });
-
-        const clearFormData = () => {
-          $('#signup-username').val('');
-          $('#signup-password').val('');
-          $('#login-username').val('');
-          $('#login-password').val('');
-          $('#login-error').text('');
-          $('#signup-error').text('');
-        };
-
-        $loginClose.click(function () {
-          clearFormData();
-          $loginModal.hide();
-        });
-
-        $signupClose.click(function () {
-          clearFormData();
-          $signupModal.hide();
-        });
-
-        $(window).click(function (event) {
-          if ($(event.target).is('.modal')) {
-            clearFormData();
-            $loginModal.hide();
-            $signupModal.hide();
-          }
-        });
-
-        // Handle form submissions (dummy error handling for demonstration)
-        $('#login-form').submit(function (event) {
-          event.preventDefault();
-
-          const username = $('#login-username').val();
-          const password = $('#login-password').val();
-
-          $.ajax({
-            url: '/login',
-            type: 'POST',
-            data: { username, password },
-            success: function (response) {
-              if (response.redirect) {
-                window.location.href = response.redirect;
-              } else {
-                $('#login-error').text(response.message);
-              }
-            },
-          });
-        });
-
-        $('#signup-form').submit(function (event) {
-          event.preventDefault();
-
-          const username = $('#signup-username').val();
-          const password = $('#signup-password').val();
-
-          $.ajax({
-            url: '/signup',
-            type: 'POST',
-            data: { username, password },
-            success: function (response) {
-              if (response.redirect) {
-                window.location.href = response.redirect;
-              } else {
-                $('#signup-error').text(response.message);
-              }
-            },
-          });
-        });
-
-        // Toggle password visibility
-        $('#toggle-login-password').change(function () {
-          const $passwordField = $('#login-password');
-          const type = $(this).is(':checked') ? 'text' : 'password';
-          $passwordField.attr('type', type);
-        });
-
-        $('#toggle-signup-password').change(function () {
-          const $passwordField = $('#signup-password');
-          const type = $(this).is(':checked') ? 'text' : 'password';
-          $passwordField.attr('type', type);
-        });
-
         $('#profile-icon').click(function () {
           $('#logout-menu').toggle();
         });
@@ -915,7 +818,7 @@ td:nth-child(1) {
         // Sign out functionality
         $('#sign-out').on('click', function () {
           // Redirect to logout route
-          window.location.href = '/signout';
+          window.location.href = '/user/signout';
         });
 
         $('.copy-btn').on('click', function () {
@@ -949,8 +852,8 @@ td:nth-child(1) {
           var $row = $(this).closest('tr'); // Get the row element for this button
 
           $.ajax({
-            url: '/delete',
-            method: 'POST',
+            url: '/links',
+            method: 'DELETE',
             data: { shortURL: shortURL },
             success: function (response) {
               if (response.success) {

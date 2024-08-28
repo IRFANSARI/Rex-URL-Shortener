@@ -749,7 +749,7 @@
         const password = $('#login-password').val();
 
         $.ajax({
-          url: '/login',
+          url: '/user/login',
           type: 'POST',
           data: { username, password },
           success: function (response) {
@@ -769,7 +769,7 @@
         const password = $('#signup-password').val();
 
         $.ajax({
-          url: '/signup',
+          url: '/user/signup',
           type: 'POST',
           data: { username, password },
           success: function (response) {
@@ -812,7 +812,7 @@
       });
 
       $('#sign-out').on('click', function () {
-        window.location.href = '/signout';
+        window.location.href = '/user/signout';
       });
 
       $('#shorten').on('click', function (e) {
@@ -820,7 +820,7 @@
         const longURL = $('#long-url').val();
 
         $.ajax({
-          url: '/shorten',
+          url: '/links',
           type: 'POST',
           data: { url: longURL },
           success: function (response) {
