@@ -44,10 +44,7 @@ function getShortURL(longURL, username) {
         resolve(data[0].short_url);
       } else {
         const shortURL =
-          hostname +
-          username[0] +
-          shortid.generate() +
-          username[username.length - 1];
+          username[0] + shortid.generate() + username[username.length - 1];
 
         const sql2 =
           'INSERT INTO urls (short_url, long_url, username) VALUES (?, ?, ?)';

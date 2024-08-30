@@ -1,5 +1,6 @@
 const authorizeUser = require('./authorizeUser');
 const sqlQueries = require('./sqlQueries');
+const hostname = process.env.URL;
 
 async function handleGetAllLinks(req, res) {
   if (req.cookies) {
@@ -9,7 +10,12 @@ async function handleGetAllLinks(req, res) {
     if (authorizeUser.getCookie(user, uuid)) {
       const username = req.cookies.user;
 
-      const data = await sqlQueries.getLinks(username);
+      let data = await sqlQueries.getLinks(username);
+      data = data.map((item) => ({
+        ...item,
+        short_url: `${hostname}${item.short_url}`,
+      }));
+
       res.render('links', { data });
     } else {
       res.status(401).redirect('/');
@@ -45,7 +51,8 @@ async function handleCreateLink(req, res) {
       if (!startsWithScheme) {
         res.json({ error: 'Invalid URL !!!' });
       } else {
-        const shortURL = await sqlQueries.getShortURL(longURL, username);
+        let shortURL = await sqlQueries.getShortURL(longURL, username);
+        shortURL = hostname + shortURL;
         res.json({ message: shortURL });
       }
     } else {
@@ -63,7 +70,8 @@ function handleDeleteLink(req, res) {
 
     if (authorizeUser.getCookie(user, uuid)) {
       const username = req.cookies.user;
-      const shortURL = req.body.shortURL;
+      let shortURL = req.body.shortURL;
+      shortURL = shortURL.replace(hostname, '');
 
       sqlQueries.removeLink(username, shortURL);
       return res.json({ success: true });

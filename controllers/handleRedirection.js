@@ -3,7 +3,7 @@ const sqlQueries = require('./sqlQueries');
 const hostname = process.env.URL;
 
 module.exports = async function (req, res) {
-  const shortURL = hostname + req.originalUrl.substring(1);
+  const shortURL = req.originalUrl.substring(1);
 
   const longURL = await sqlQueries.getLongURL(shortURL);
   if (longURL === undefined) {
