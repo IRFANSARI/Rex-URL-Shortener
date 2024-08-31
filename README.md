@@ -64,5 +64,4 @@ Please try to open it in PC, I am not a big frontend guy.
 - To run the Node server, just write `npm start`.
 - If you want to run the server using nodemon use the command `npm run dev`.
 
-At last, I would really like to thank you (yes you) for reading all this nonsense stuff. <br/>
-See you around, signing out....
+## Thank You
