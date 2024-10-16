@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head.ejs') %>
+    <title>Rex URL Shortener</title>
+  </head>
+  <body class="dark-mode">
+    <%- include('partials/navbar.ejs') %>
+
+    <main class="container">
+      <div class="shorten-container">
+        <input
+          type="url"
+          id="long-url"
+          placeholder="Enter your long URL here"
+          required
+        />
+        <button id="shorten-btn" class="btn btn-primary">Shorten</button>
+        <input type="text" id="short-url" class="hidden" readonly />
+      </div>
+      <div id="image-container">
+        <!-- Optional: Add an attractive image here -->
+        <img src="/images/shorten.svg" alt="URL Shortener" />
+      </div>
+    </main>
+
+    <%- include('partials/footer.ejs') %>
+
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/scripts.js"></script>
+  </body>
+</html>

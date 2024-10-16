@@ -1,0 +1,25 @@
+<nav class="navbar">
+  <div class="navbar-left">
+    <a href="/" class="navbar-brand">Rex URL Shortener</a>
+  </div>
+  <div class="navbar-right">
+    <button id="theme-switch" class="theme-switch">
+      <i id="theme-icon" class="fas fa-moon"></i>
+    </button>
+    <% if (!user) { %>
+    <a href="/login" class="btn">Login</a>
+    <a href="/signup" class="btn btn-primary">Sign Up</a>
+    <% } else { %>
+    <div class="profile-menu">
+      <div class="profile-circle" onclick="toggleProfileMenu()">
+        <img src="/images/profile.png" alt="Profile" />
+      </div>
+      <div id="profile-dropdown" class="profile-dropdown hidden">
+        <p class="username"><%= user.username %></p>
+        <a href="/links">Manage Links</a>
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</nav>
