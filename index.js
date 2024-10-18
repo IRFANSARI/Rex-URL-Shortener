@@ -10,7 +10,7 @@ const { checkForValidUserLogin } = require('./middlewares/index');
 
 // Environment Variables
 const hostname = process.env.URL;
-const port = process.env.PORT;
+const port = process.env.PORT || 7860;
 const app = express();
 
 // Middlewares
@@ -29,6 +29,6 @@ app.use('/links', linksRouter);
 app.get('*', handleRedirection);
 
 // Starting the server
-app.listen(port || 8080, () => {
+app.listen(port, () => {
   console.log(`Server running at ${hostname}`);
 });

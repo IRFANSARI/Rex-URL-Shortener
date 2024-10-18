@@ -528,6 +528,100 @@
     #manage-links:hover {
       background-color: var(--button-hover-bg);
     }
+
+    .copy-btn {
+      display: hidden;
+      width: auto; /* Set to auto for flexible sizing */
+      padding: 5px 10px; /* Adjust padding as needed */
+    }
+
+    .profile-container {
+      position: relative;
+    }
+
+    .profile-dropdown {
+      display: none; /* Hide by default */
+      position: absolute;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1000; /* Ensure it appears above other elements */
+    }
+
+    .dropdown:hover .profile-dropdown,
+    .dropdown:focus-within .profile-dropdown {
+      display: block; /* Show dropdown on hover or focus */
+    }
+
+    /* Add this at the end of your existing CSS */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column; /* Stack header items */
+        align-items: flex-start; /* Align to the left */
+      }
+
+      .logo {
+        font-size: 1.5rem; /* Reduce logo size */
+      }
+
+      .button-container {
+        margin-top: 10px; /* Add some space above buttons */
+        width: 100%; /* Make buttons take full width */
+        justify-content: space-around; /* Distribute buttons evenly */
+      }
+
+      button {
+        width: 100%; /* Full width for buttons */
+        font-size: 0.9rem; /* Smaller font size */
+        padding: 10px; /* Adjust padding for better touch targets */
+      }
+
+      .container {
+        width: 90%; /* More flexible container width */
+        padding: 15px; /* Adjust padding */
+        margin-top: 5%; /* Reduce margin on top */
+      }
+
+      textarea {
+        width: 100%; /* Full width for textareas */
+        font-size: 0.9rem; /* Adjust font size */
+      }
+
+      #short-url {
+        width: 100%; /* Full width for input */
+      }
+
+      /* Adjust modal size for mobile */
+      .modal-content {
+        width: 90%; /* Responsive modal width */
+        margin: 10% auto; /* Adjust margin for centering */
+      }
+
+      .profile-pic {
+        width: 30px; /* Smaller profile pic */
+        height: 30px; /* Smaller profile pic */
+      }
+
+      .modal-content .form-group button {
+        font-size: 0.9rem; /* Smaller buttons */
+      }
+
+      footer p {
+        font-size: 0.7em; /* Smaller footer text */
+      }
+
+      .toaster {
+        padding: 8px; /* Adjust padding for smaller screens */
+      }
+
+      #manage-links {
+        padding: 10px 20px; /* Adjust button size */
+        font-size: 1em; /* Adjust font size */
+      }
+
+      .copy-btn {
+        width: 80px; /* Set a specific width for mobile if needed */
+      }
+    }
   </style>
 
   <body>
@@ -542,8 +636,14 @@
         <button onclick="window.location.href='#';">Login</button>
         <button onclick="window.location.href='#';">Sign Up</button>
         <% } else { %>
-        <div class="profile-container">
-          <div id="profile-pic" class="profile-pic">👤</div>
+        <div class="profile-container dropdown">
+          <div
+            id="profile-pic"
+            class="profile-pic dropdown-toggle"
+            onclick="toggleDropdown()"
+          >
+            👤
+          </div>
           <div id="profile-dropdown" class="profile-dropdown">
             <div class="dropdown-item" id="user-name"><%= username %></div>
             <div class="dropdown-item" id="sign-out">Sign Out</div>
@@ -551,6 +651,7 @@
         </div>
         <% } %>
 
+        <!-- Modals for Login and Sign Up -->
         <div id="login-modal" class="modal">
           <div class="modal-content">
             <span class="close" id="login-close">&times;</span>
@@ -847,6 +948,16 @@
         toaster.text(message);
         toaster.fadeIn(400).delay(1000).fadeOut(400);
       }
+      function toggleDropdown() {
+        $('#profile-dropdown').toggle();
+      }
+
+      // Close dropdown when clicking outside of it
+      $(document).on('click', function (e) {
+        if (!$(e.target).closest('.profile-container').length) {
+          $('#profile-dropdown').hide();
+        }
+      });
     });
   </script>
 </html>
